@@ -27,9 +27,10 @@ class Event
 
   def postpone_24h
     @start_date +=  24 * 60 * 60 # ajouter 24h en secondes
+    puts "L'évenement a été reporté de 24h"
   end
 
-  def is_soon?()
+  def is_soon?
     time = Time.now
     start_date_minus_time = @start_date - time # pour obtenir la différence en secondes
     if end_date < Time.now
@@ -50,6 +51,44 @@ class Event
     puts "Date de début : #{@start_date} "
     puts "Durée : #{@number_minutes} minutes"
     puts "Invités : #{@attendees.join(", ")}" # sinon sa affiche en array einstein
+  end
+
+  def age_analysis # premiere composition en POO
+    age_array = [] #On initialise un array qui va contenir les âges de tous les participants à un évènement
+    average = 0 #On initialise une variable pour calculer la moyenne d'âge à l'évènement
+  
+    @attendees.each do |attendee| #On parcourt tous les participants (objets de type User)
+      age_array << attendee.age #leur âge est stocké dans l'array des âges
+      average = average + attendee.age #leur âge est additionné pour préparer le calcul de la moyenne
+    end
+  
+    average = average / @attendees.length #on divise la somme des âges pour avoir la moyenne
+  
+    puts "Voici les âges des participants :"
+    puts age_array.join(", ")
+    puts "La moyenne d'âge est de #{average} ans"
+  end
+
+end
+
+class WorkEvent < Event
+
+  attr_accessor :location
+
+  def initialize(start_date, duration, title, attendees, location)
+    @location = location # j'ai rajouté cette ligne
+
+    super(start_date, duration, title, attendees) # fait appel au initialize de la classe Event methode super
+  end
+
+  def is_event_acceptable?
+    if @attendees.length > 3 || @duration > 60
+      puts "Cette réunion ne respecte pas nos bonnes pratiques !"
+      return false
+    else
+      puts "Cette réunion est OK."
+      return true
+    end
   end
 
 end
